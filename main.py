@@ -91,3 +91,48 @@
 
 # for [k,v] in myDict.items():
 #     print(k,v)
+
+# class-4 10/02/26
+
+# myTuple = (1,2,"three",True)
+# myTuple = myTuple + (False,"hello")
+# print(myTuple)
+
+# mySet1 = {1,2,3}
+# mySet2 = {3,4,5}
+
+# mySet1.update(("hello1","hello2","hello3"))
+# mySet1.remove("hello1")
+# mySet1.discard("hello2")
+# mySet1.clear()
+# print(mySet1)
+# print(mySet1.intersection(mySet2))
+
+# class MyClass:
+#     def __init__(self):
+#         print("constructor called ")
+
+#     def __str__(self):
+#         return "this is str constructor"
+    
+#     def sayHello(self, name):
+#         print("hello , ", name)
+
+# obj1 = MyClass()
+# obj1.sayHello("Sayanjit")
+
+# print(obj1)
+
+# class A:
+#     def __init__(self):
+#         self.a = "this is a"
+
+#     def show(self):
+#         print(self.a)
+
+
+# class B(A):
+#     pass
+
+# b = B()
+# b.show()
