@@ -136,3 +136,44 @@
 
 # b = B()
 # b.show()
+
+# class-5 (12/02/26)
+
+from langgraph.graph import StateGraph , END , START
+from pydantic import BaseModel
+from IPython.display import Image, display
+
+class WorkflowState(BaseModel):
+    query: str
+    key_points: list[str] = []
+    summerized: str = ""
+
+def key_points_node(state: WorkflowState):
+    inp = state.query
+    print("key points found! of the query: ", inp )
+    state.key_points.append("point1")
+    state.key_points.append("point2")
+    state.key_points.append("point3")
+    return state
+
+def summerized_node(state: WorkflowState):
+    kp = state.key_points
+    for point in kp:
+        print(point)
+    print("query summerized!")
+    state.summerized = state.query + "query summerized!"
+    return state
+
+workflow = StateGraph(WorkflowState) # eitar madhome data changes track hobe
+
+workflow.add_node("key_points", key_points_node)
+workflow.add_node("summerized", summerized_node)
+
+workflow.add_edge(START,"key_points")
+workflow.add_edge("key_points", "summerized")
+workflow.add_edge("summerized", END)
+
+app = workflow.compile()
+print(app.get_graph().draw_ascii())
+result = app.invoke({"query":"test text for summerization."})
+print(result)
