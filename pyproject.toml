@@ -8,4 +8,5 @@ dependencies = [
     "grandalf>=0.8",
     "ipython>=9.10.0",
     "langchain>=1.2.10",
+    "langchain-google-genai>=4.2.1",
 ]

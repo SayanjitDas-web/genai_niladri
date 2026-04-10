@@ -47,10 +47,10 @@
 #     case _:
 #         print("execeptional case")
 
-# text = "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto voluptas iste harum iusto recusandae laudantium aperiam mollitia! Eius, quam perspiciatis?"
+text = "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto voluptas iste harum iusto recusandae laudantium aperiam mollitia! Eius, quam perspiciatis?"
 
-# # for char in text:
-# #     print(word)
+# for char in text:
+#     print(char)
 
 # for i in range(len(text)):
 #     if i == 10:
@@ -141,7 +141,31 @@
 
 from langgraph.graph import StateGraph , END , START
 from pydantic import BaseModel
-from IPython.display import Image, display
+from langchain_google_genai import GoogleGenerativeAI
+from langchain_core.prompts import PromptTemplate
+
+llm = GoogleGenerativeAI(
+    api_key = "AIzaSyBsp1z4jPid1IWztmD286VtbiF5lJ9djdM",
+    model = "gemini-2.5-flash"
+)
+
+key_points_prompt = PromptTemplate(
+    template="""query:{query} 
+    find the key points from the query text,
+    and strictly return the found key points in a python list format.
+    example:[keypoint1,keypoint2,....]
+    """,
+    input_variables=["query"]
+)
+
+summerizer_prompt = PromptTemplate(
+    template="""
+    key_points:{key_points}
+    original_query:{original_query}
+    use this two info and summerize the original query.
+    """,
+    input_variables=["key_points","original_query"]
+)
 
 class WorkflowState(BaseModel):
     query: str
@@ -150,18 +174,20 @@ class WorkflowState(BaseModel):
 
 def key_points_node(state: WorkflowState):
     inp = state.query
-    print("key points found! of the query: ", inp )
-    state.key_points.append("point1")
-    state.key_points.append("point2")
-    state.key_points.append("point3")
+    prompt = key_points_prompt.format(query=inp)
+    response = llm.invoke(prompt)
+    try:
+        print(f"key points: {eval(response)}")
+        state.key_points = eval(response)
+    except:
+        print(f"key points: {[response]}")
+        state.key_points = [response]
     return state
 
 def summerized_node(state: WorkflowState):
-    kp = state.key_points
-    for point in kp:
-        print(point)
-    print("query summerized!")
-    state.summerized = state.query + "query summerized!"
+    prompt = summerizer_prompt.format(key_points=state.key_points,original_query=state.query)
+    response = llm.invoke(prompt)
+    state.summerized = response
     return state
 
 workflow = StateGraph(WorkflowState) # eitar madhome data changes track hobe
@@ -175,5 +201,7 @@ workflow.add_edge("summerized", END)
 
 app = workflow.compile()
 print(app.get_graph().draw_ascii())
-result = app.invoke({"query":"test text for summerization."})
-print(result)
+result = app.invoke({"query":"""
+Artificial Intelligence (AI) is a branch of Computer Science that focuses on building machines and software that can perform tasks normally requiring human intelligence.
+"""})
+print(result["summerized"])
