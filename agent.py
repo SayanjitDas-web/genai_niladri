@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from langchain_google_genai import GoogleGenerativeAI
 
 llm = GoogleGenerativeAI(
-    api_key = "AIzaSyBsp1z4jPid1IWztmD286VtbiF5lJ9djdM",
+    api_key = "",
     model = "gemini-2.5-flash"
 )
 
