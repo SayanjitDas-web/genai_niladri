@@ -145,7 +145,7 @@ from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 
 llm = GoogleGenerativeAI(
-    api_key = "",
+    api_key = "AIzaSyBsp1z4jPid1IWztmD286VtbiF5lJ9djdM",
     model = "gemini-2.5-flash"
 )
 
